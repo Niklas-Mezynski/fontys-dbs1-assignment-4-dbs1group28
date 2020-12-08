@@ -13,3 +13,17 @@ update president set years_served = yearsserved where id = presid;
 end if;
 end;
 $$ language plpgsql;
+
+
+-- Task 2
+create or replace function add_hobby (presid int, newhobby pres_hobby.hobby%type)
+returns void
+as $$
+begin
+	if newhobby in (select ph.hobby from pres_hobby ph where ph.pres_id = presid) then
+	raise exception 'Hobby already exists';
+else 
+insert into pres_hobby(pres_id, hobby) values (presid, newhobby);
+end if;
+end;
+$$ language plpgsql;
