@@ -27,3 +27,20 @@ insert into pres_hobby(pres_id, hobby) values (presid, newhobby);
 end if;
 end;
 $$ language plpgsql;
+
+
+-- Task 3
+create or replace function add_administration (adminid administration.id%type , adminnr administration.admin_nr%type,
+													presid administration.pres_id%type, yearinaug administration.year_inaugurated%type)
+returns void
+as $$
+declare maxnr int = (select max(a.admin_nr) from administration a);
+begin
+	if adminnr != maxnr + 1 then
+	raise exception 'Administration number must be %', (maxnr + 1);
+else 
+insert into administration(id, admin_nr, pres_id, year_inaugurated) values (adminid, adminnr, presid, yearinaug);
+end if;
+end;
+$$ language plpgsql;
+
