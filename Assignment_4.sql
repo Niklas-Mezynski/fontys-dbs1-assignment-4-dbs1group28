@@ -44,3 +44,22 @@ end if;
 end;
 $$ language plpgsql;
 
+
+--Task 4
+create or replace function update_children (presid  int, nrchildren int, spouse pres_marriage.spouse_name%type)
+returns void
+as $$
+declare childrennr int = (select pm.nr_children from pres_marriage pm where pres_id = presid and spouse_name=spouse);
+declare deathage int = (select  p2.death_age from president p2 where p2.id = presid);
+begin
+	if deathage > 0 or nrchildren <= childrennr	then 
+		raise exception 'mett';
+	else  
+update pres_marriage set nr_children = nrchildren where pres_id = presid and spouse_name = spouse;
+end if;
+end;
+$$ language plpgsql;
+
+
+select update_children (44,3, 'KNAUSS M');
+
