@@ -25,3 +25,27 @@ for each row execute procedure noOfWinners();
 insert into election(election_year,candidate,votes,winner_loser_indic)
 values (2020, 'TRUMP',3, 'W'),
 (2020, 'BIDEN', 50, 'W');
+
+
+
+-- 5
+create or replace function check_years_served()
+returns trigger as $$
+begin
+	if (new.years_served < old.years_served) then
+	raise exception 'The number of years served for a president cannot decrease';
+	end if;
+	return new;
+end;
+$$language plpgsql;
+
+create trigger check_years_served after insert or update on president
+for each row execute procedure check_years_served();
+
+UPDATE president
+SET years_served=3
+WHERE id=39;
+
+UPDATE president
+SET years_served=4
+WHERE id=39;
