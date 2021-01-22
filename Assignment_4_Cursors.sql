@@ -24,3 +24,24 @@ select vPresintoPres();
 select * from vpresandpres;
 
 
+-- 3
+
+create or replace function nrChildren() returns void as $$
+declare
+c_pres cursor for
+select id, "name" from president p;
+begin
+for pres in c_pres loop
+insert into totalChildren values (pres."name", (select sum(nr_children) from pres_marriage pm where pm.pres_id = pres.id));
+end loop;
+end;
+$$ language plpgsql;
+
+create temp table totalChildren (
+	pres_name varchar,
+	noChildren
+);
+
+select nrChildren();
+
+select * from totalChildren;
